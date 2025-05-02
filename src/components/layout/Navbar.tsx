@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Film, Tv, BookmarkPlus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import SearchBar from "../search/SearchBar";
 
 const Navbar = () => {
@@ -25,79 +28,111 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "glass-morphism" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        isScrolled ? "glass-morphism backdrop-blur-xl" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <h1 className="text-2xl font-bold text-gradient">LUMINA</h1>
-        </Link>
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <h1 className="text-2xl font-bold text-gradient">LUMINA</h1>
+          </Link>
 
-        <nav className="glass-morphism rounded-full px-6 py-2">
-          <ul className="flex items-center space-x-8">
-            <li>
-              <Link
-                to="/"
-                className={cn(
-                  "flex flex-col items-center transition-all duration-300",
-                  isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <Home className="h-5 w-5" />
-                <span className="text-xs mt-1">Home</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/movies"
-                className={cn(
-                  "flex flex-col items-center transition-all duration-300",
-                  isActive("/movies") ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <Film className="h-5 w-5" />
-                <span className="text-xs mt-1">Movies</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/tv"
-                className={cn(
-                  "flex flex-col items-center transition-all duration-300",
-                  isActive("/tv") ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <Tv className="h-5 w-5" />
-                <span className="text-xs mt-1">TV Shows</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/watchlist"
-                className={cn(
-                  "flex flex-col items-center transition-all duration-300",
-                  isActive("/watchlist") ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <BookmarkPlus className="h-5 w-5" />
-                <span className="text-xs mt-1">Watchlist</span>
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={() => setSearchOpen(true)}
-                className={cn(
-                  "flex flex-col items-center transition-all duration-300",
-                  searchOpen ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <Search className="h-5 w-5" />
-                <span className="text-xs mt-1">Search</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
+          {/* Main Navigation */}
+          <nav className={cn(
+            "glass-morphism rounded-full px-8 py-3 transition-all duration-300",
+            isScrolled ? "shadow-lg bg-white/10" : "bg-white/5"
+          )}>
+            <ul className="flex items-center space-x-10">
+              <li>
+                <Link
+                  to="/"
+                  className={cn(
+                    "flex flex-col items-center transition-all duration-300 relative",
+                    isActive("/") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
+                    isActive("/") ? "bg-primary opacity-100" : "opacity-0"
+                  )} />
+                  <Home className="h-5 w-5" />
+                  <span className="text-xs mt-1 font-medium">Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movies"
+                  className={cn(
+                    "flex flex-col items-center transition-all duration-300 relative",
+                    isActive("/movies") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
+                    isActive("/movies") ? "bg-primary opacity-100" : "opacity-0"
+                  )} />
+                  <Film className="h-5 w-5" />
+                  <span className="text-xs mt-1 font-medium">Movies</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/tv"
+                  className={cn(
+                    "flex flex-col items-center transition-all duration-300 relative",
+                    isActive("/tv") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
+                    isActive("/tv") ? "bg-primary opacity-100" : "opacity-0"
+                  )} />
+                  <Tv className="h-5 w-5" />
+                  <span className="text-xs mt-1 font-medium">TV Shows</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/watchlist"
+                  className={cn(
+                    "flex flex-col items-center transition-all duration-300 relative",
+                    isActive("/watchlist") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
+                    isActive("/watchlist") ? "bg-primary opacity-100" : "opacity-0"
+                  )} />
+                  <BookmarkPlus className="h-5 w-5" />
+                  <span className="text-xs mt-1 font-medium">Watchlist</span>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className={cn(
+                    "flex flex-col items-center transition-all duration-300 relative",
+                    searchOpen ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
+                    searchOpen ? "bg-primary opacity-100" : "opacity-0"
+                  )} />
+                  <Search className="h-5 w-5" />
+                  <span className="text-xs mt-1 font-medium">Search</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Right side - could add user profile or additional actions here */}
+          <div className="w-[100px]">
+            {/* Placeholder to balance the layout */}
+          </div>
+        </div>
       </div>
       
       {/* Search overlay */}
