@@ -13,23 +13,27 @@ import MediaRow from "@/components/media/MediaRow";
 import { toast } from "sonner";
 
 const MediaDetailsPage: React.FC = () => {
-  const { mediaType, id } = useParams<{ mediaType: MediaType; id: string }>();
+  const { id } = useParams<{ id: string }>();
+  // Extract mediaType directly from URL pathname
+  const mediaType = window.location.pathname.includes("/movie/") ? "movie" : "tv";
   const [item, setItem] = useState<DetailedMediaItem | null>(null);
   const [recommendations, setRecommendations] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   
   useEffect(() => {
     const fetchDetails = async () => {
-      if (!mediaType || !id) return;
+      if (!id) return;
       
       try {
         setLoading(true);
+        console.log(`Fetching details for ${mediaType} with ID: ${id}`);
         
         const [detailsData, recommendationsData] = await Promise.all([
           getMediaDetails(mediaType as MediaType, parseInt(id)),
           getRecommendations(mediaType as MediaType, parseInt(id))
         ]);
         
+        console.log("Details data received:", detailsData);
         setItem(detailsData);
         setRecommendations(recommendationsData.results);
       } catch (error) {

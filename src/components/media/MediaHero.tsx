@@ -1,6 +1,6 @@
 
-import React from "react";
-import { Play, Info, Heart } from "lucide-react";
+import React, { useState } from "react";
+import { Play, Info, Heart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DetailedMediaItem, getImageUrl } from "@/services/tmdb";
@@ -14,6 +14,7 @@ interface MediaHeroProps {
 const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMedia();
   const inWatchlist = isInWatchlist(item.id);
+  const [showTrailer, setShowTrailer] = useState(false);
   
   const handleWatchlistToggle = () => {
     if (inWatchlist) {
@@ -105,7 +106,12 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               </Button>
               
               {trailer && (
-                <Button variant="outline" size="lg" className="rounded-full">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="rounded-full"
+                  onClick={() => setShowTrailer(true)}
+                >
                   <Info className="h-4 w-4 mr-2" />
                   Watch Trailer
                 </Button>
@@ -126,6 +132,29 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
           </div>
         </div>
       </div>
+      
+      {/* Trailer Modal */}
+      {showTrailer && trailer && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-5xl aspect-video">
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute -top-12 right-0 rounded-full bg-black/50 text-white border-none hover:bg-black/80"
+              onClick={() => setShowTrailer(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <iframe
+              src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Trailer"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
