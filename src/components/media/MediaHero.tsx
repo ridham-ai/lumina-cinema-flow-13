@@ -15,6 +15,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMedia();
   const inWatchlist = isInWatchlist(item.id);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(false);
   
   const handleWatchlistToggle = () => {
     if (inWatchlist) {
@@ -33,6 +34,18 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
+  };
+
+  // Generate the Vidora.su URL based on media type
+  const getPlayerUrl = () => {
+    if (mediaType === "movie") {
+      return `https://vidora.su/movie/${item.id}?parameters`;
+    } else if (mediaType === "tv") {
+      // For TV shows, we'll default to season 1, episode 1
+      // You might want to enhance this later to select the correct episode
+      return `https://vidora.su/tv/${item.id}/1/1?parameters`;
+    }
+    return "";
   };
   
   return (
@@ -100,7 +113,11 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
             
             {/* Buttons */}
             <div className="flex flex-wrap gap-3">
-              <Button size="lg" className="rounded-full">
+              <Button 
+                size="lg" 
+                className="rounded-full"
+                onClick={() => setShowPlayer(true)}
+              >
                 <Play className="h-4 w-4 mr-2" />
                 Watch Now
               </Button>
@@ -151,6 +168,29 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Trailer"
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {/* Vidora.su Player Modal */}
+      {showPlayer && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-6xl aspect-video">
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute -top-12 right-0 rounded-full bg-black/50 text-white border-none hover:bg-black/80"
+              onClick={() => setShowPlayer(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <iframe
+              src={getPlayerUrl()}
+              className="w-full h-full rounded-lg"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+              title={`Watch ${item.title || item.name}`}
             ></iframe>
           </div>
         </div>
