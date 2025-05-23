@@ -7,11 +7,13 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import SearchBar from "../search/SearchBar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -25,6 +27,54 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Navigation items shared between mobile and desktop
+  const navigationItems = [
+    { path: "/", icon: Home, label: "Home" },
+    { path: "/movies", icon: Film, label: "Movies" },
+    { path: "/tv", icon: Tv, label: "TV Shows" },
+    { path: "/watchlist", icon: BookmarkPlus, label: "Watchlist" },
+  ];
+
+  // Mobile bottom navigation bar
+  if (isMobile) {
+    return (
+      <>
+        <div className="pb-20"> {/* Add padding to main content to account for fixed bottom bar */}
+          {/* Search overlay */}
+          <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+        </div>
+        <nav className="fixed bottom-0 left-0 right-0 z-50 glass-morphism border-t border-white/10">
+          <div className="flex items-center justify-around px-1 py-2">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex flex-col items-center p-2",
+                  isActive(item.path) ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <item.icon className={cn("h-5 w-5", isActive(item.path) && "text-primary")} />
+                <span className="text-[10px] mt-1">{item.label}</span>
+                {isActive(item.path) && (
+                  <span className="absolute bottom-1 h-1 w-1 rounded-full bg-primary"></span>
+                )}
+              </Link>
+            ))}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex flex-col items-center p-2 text-muted-foreground"
+            >
+              <Search className="h-5 w-5" />
+              <span className="text-[10px] mt-1">Search</span>
+            </button>
+          </div>
+        </nav>
+      </>
+    );
+  }
+
+  // Desktop navigation
   return (
     <header
       className={cn(
@@ -41,10 +91,10 @@ const Navbar = () => {
 
           {/* Main Navigation */}
           <nav className={cn(
-            "glass-morphism rounded-full px-8 py-3 transition-all duration-300",
+            "glass-morphism rounded-full px-4 md:px-8 py-3 transition-all duration-300",
             isScrolled ? "shadow-lg bg-white/10" : "bg-white/5"
           )}>
-            <ul className="flex items-center space-x-10">
+            <ul className="flex items-center space-x-4 md:space-x-10">
               <li>
                 <Link
                   to="/"

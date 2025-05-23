@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Play, Info } from "lucide-react";
 import { MediaItem, getImageUrl, MediaType } from "@/services/tmdb";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FeaturedBannerProps {
   item: MediaItem;
@@ -12,6 +13,7 @@ interface FeaturedBannerProps {
 const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
   const navigate = useNavigate();
   const mediaType = item.media_type || (item.first_air_date ? "tv" : "movie") as MediaType;
+  const isMobile = useIsMobile();
 
   // Format the release date or first air date to display year only
   const year = item.release_date?.substring(0, 4) || item.first_air_date?.substring(0, 4);
@@ -21,7 +23,7 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
   };
   
   return (
-    <div className="relative min-h-[60vh] md:min-h-[80vh] w-full overflow-hidden mb-8">
+    <div className="relative min-h-[50vh] md:min-h-[60vh] lg:min-h-[80vh] w-full overflow-hidden mb-6 md:mb-8">
       {/* Background image */}
       <div className="absolute inset-0">
         <img
@@ -33,13 +35,13 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
       </div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 absolute bottom-0 left-0 right-0 pb-16 md:pb-24">
+      <div className="container mx-auto px-4 absolute bottom-0 left-0 right-0 pb-12 md:pb-16 lg:pb-24">
         <div className="max-w-2xl">
-          <h1 className="text-4xl md:text-6xl font-bold mb-3 animate-fade-in">
+          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-2 md:mb-3 animate-fade-in">
             {item.title || item.name}
           </h1>
           
-          <div className="flex items-center space-x-4 mb-4 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="flex items-center space-x-3 md:space-x-4 mb-2 md:mb-4 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             {year && <span className="text-sm md:text-base">{year}</span>}
             {item.vote_average > 0 && (
               <span className="flex items-center">
@@ -49,17 +51,26 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
             )}
           </div>
           
-          <p className="text-sm md:text-base opacity-90 mb-6 line-clamp-3 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-xs md:text-sm lg:text-base opacity-90 mb-4 md:mb-6 line-clamp-2 md:line-clamp-3 animate-fade-in" style={{ animationDelay: "0.3s" }}>
             {item.overview}
           </p>
           
           <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <Button size="lg" className="rounded-full" onClick={handleNavigate}>
-              <Play className="h-4 w-4 mr-2" />
+            <Button 
+              size={isMobile ? "sm" : "lg"} 
+              className="rounded-full" 
+              onClick={handleNavigate}
+            >
+              <Play className="h-3 w-3 md:h-4 md:w-4 mr-2" />
               Watch Now
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full" onClick={handleNavigate}>
-              <Info className="h-4 w-4 mr-2" />
+            <Button 
+              variant="outline" 
+              size={isMobile ? "sm" : "lg"} 
+              className="rounded-full" 
+              onClick={handleNavigate}
+            >
+              <Info className="h-3 w-3 md:h-4 md:w-4 mr-2" />
               More Info
             </Button>
           </div>

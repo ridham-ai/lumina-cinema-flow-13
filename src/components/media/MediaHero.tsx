@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DetailedMediaItem, getImageUrl } from "@/services/tmdb";
 import { useMedia } from "@/contexts/MediaContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MediaHeroProps {
   item: DetailedMediaItem;
@@ -16,6 +17,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   const inWatchlist = isInWatchlist(item.id);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showPlayer, setShowPlayer] = useState(false);
+  const isMobile = useIsMobile();
   
   const handleWatchlistToggle = () => {
     if (inWatchlist) {
@@ -49,7 +51,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   };
   
   return (
-    <div className="relative min-h-screen flex items-end overflow-hidden">
+    <div className="relative min-h-[80vh] md:min-h-screen flex items-end overflow-hidden">
       {/* Background image with gradient overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -61,10 +63,13 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
       </div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 py-20 relative z-10 w-full">
-        <div className="flex flex-col md:flex-row md:items-end gap-8">
+      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10 w-full">
+        <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
           {/* Poster */}
-          <div className="w-full max-w-xs mx-auto md:mx-0 glass-morphism rounded-lg overflow-hidden">
+          <div className={cn(
+            "w-1/2 md:w-1/4 lg:max-w-xs mx-auto md:mx-0 glass-morphism rounded-lg overflow-hidden",
+            isMobile ? "max-w-[180px]" : ""
+          )}>
             <img
               src={getImageUrl(item.poster_path, "w500") || "/placeholder.svg"}
               alt={item.title || item.name}
@@ -74,12 +79,12 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
           
           {/* Details */}
           <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-5xl font-bold text-gradient mb-2">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient mb-2">
               {item.title || item.name}
             </h1>
             
             {/* Metadata */}
-            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
               <span className="glass-morphism px-2 py-1 rounded-md">
                 {item.release_date?.substring(0, 4) || 
                  item.first_air_date?.substring(0, 4) || 
@@ -99,7 +104,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
                 </span>
               )}
               
-              {item.genres.map((genre) => (
+              {item.genres.slice(0, isMobile ? 2 : undefined).map((genre) => (
                 <span key={genre.id} className="glass-morphism px-2 py-1 rounded-md">
                   {genre.name}
                 </span>
@@ -107,14 +112,14 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
             </div>
             
             {/* Overview */}
-            <p className="text-sm md:text-base opacity-90 mb-6 line-clamp-3 md:line-clamp-none">
+            <p className="text-sm md:text-base opacity-90 mb-4 md:mb-6 line-clamp-3 md:line-clamp-none">
               {item.overview}
             </p>
             
             {/* Buttons */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 pb-4 md:pb-0">
               <Button 
-                size="lg" 
+                size={isMobile ? "sm" : "lg"} 
                 className="rounded-full"
                 onClick={() => setShowPlayer(true)}
               >
@@ -125,12 +130,12 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               {trailer && (
                 <Button 
                   variant="outline" 
-                  size="lg" 
+                  size={isMobile ? "sm" : "lg"} 
                   className="rounded-full"
                   onClick={() => setShowTrailer(true)}
                 >
                   <Info className="h-4 w-4 mr-2" />
-                  Watch Trailer
+                  {isMobile ? "Trailer" : "Watch Trailer"}
                 </Button>
               )}
               

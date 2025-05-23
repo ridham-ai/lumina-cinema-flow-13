@@ -13,6 +13,7 @@ import MediaDetailsPage from "./pages/MediaDetailsPage";
 import WatchlistPage from "./pages/WatchlistPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import NotFound from "./pages/NotFound";
+import { useIsMobile } from "./hooks/use-mobile";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,27 +24,35 @@ const queryClient = new QueryClient({
   },
 });
 
+const AppContent = () => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <BrowserRouter>
+      <Navbar />
+      <main className={`min-h-screen ${isMobile ? "pb-20" : ""}`}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/tv" element={<TVShowsPage />} />
+          <Route path="/movie/:id" element={<MediaDetailsPage />} />
+          <Route path="/tv/:id" element={<MediaDetailsPage />} />
+          <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <MediaProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Navbar />
-          <main className="min-h-screen">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/movies" element={<MoviesPage />} />
-              <Route path="/tv" element={<TVShowsPage />} />
-              <Route path="/movie/:id" element={<MediaDetailsPage />} />
-              <Route path="/tv/:id" element={<MediaDetailsPage />} />
-              <Route path="/watchlist" element={<WatchlistPage />} />
-              <Route path="/search" element={<SearchResultsPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-        </BrowserRouter>
+        <AppContent />
       </MediaProvider>
     </TooltipProvider>
   </QueryClientProvider>
