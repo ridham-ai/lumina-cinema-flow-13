@@ -19,18 +19,35 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      // Store the current scroll position before disabling scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
     } else {
-      document.body.style.overflow = "auto";
+      // Restore scroll position when closing
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+      
       setQuery("");
       setResults([]);
     }
     
     return () => {
-      document.body.style.overflow = "auto";
+      // Cleanup on unmount
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -52,7 +69,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
       } else {
         setResults([]);
       }
-    }, 500);
+    }, 300); // Reduced debounce time for better responsiveness
 
     return () => clearTimeout(searchTimeout);
   }, [query]);
@@ -70,7 +87,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div className="glass-morphism flex items-center rounded-full w-full max-w-2xl mx-auto overflow-hidden px-6 py-3">
@@ -118,13 +135,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                         <div 
                           key={`${item.media_type}-${item.id}`}
                           onClick={() => handleItemClick(item)}
-                          className="glass-morphism rounded-lg overflow-hidden card-hover cursor-pointer"
+                          className="glass-morphism rounded-lg overflow-hidden transform transition-all duration-200 hover:scale-105 cursor-pointer"
                         >
                           <div className="aspect-[2/3] relative">
                             <img 
                               src={getImageUrl(item.poster_path || item.backdrop_path, "w500") || "/placeholder.svg"} 
                               alt={item.title || item.name}
                               className="w-full h-full object-cover"
+                              loading="lazy"
                             />
                             <div className="absolute top-2 right-2 glass-morphism rounded-full px-2 py-1 text-xs flex items-center">
                               {item.media_type === "movie" 
