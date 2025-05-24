@@ -23,7 +23,10 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
   };
   
   return (
-    <div className="relative min-h-[50vh] md:min-h-[60vh] lg:min-h-[80vh] w-full overflow-hidden mb-6 md:mb-8">
+    <div className={cn(
+      "relative w-full overflow-hidden mb-4 md:mb-6",
+      isMobile ? "min-h-[40vh]" : "min-h-[50vh] md:min-h-[60vh] lg:min-h-[80vh]"
+    )}>
       {/* Background image */}
       <div className="absolute inset-0">
         <img
@@ -35,14 +38,23 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
       </div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 absolute bottom-0 left-0 right-0 pb-12 md:pb-16 lg:pb-24">
-        <div className="max-w-2xl">
-          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-2 md:mb-3 animate-fade-in">
+      <div className={cn(
+        "container mx-auto absolute bottom-0 left-0 right-0",
+        isMobile ? "px-4 pb-6" : "px-4 pb-12 md:pb-16 lg:pb-24"
+      )}>
+        <div className={cn("max-w-2xl", isMobile && "max-w-full")}>
+          <h1 className={cn(
+            "font-bold mb-2 animate-fade-in",
+            isMobile ? "text-2xl" : "text-3xl md:text-4xl lg:text-6xl md:mb-3"
+          )}>
             {item.title || item.name}
           </h1>
           
-          <div className="flex items-center space-x-3 md:space-x-4 mb-2 md:mb-4 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            {year && <span className="text-sm md:text-base">{year}</span>}
+          <div className={cn(
+            "flex items-center mb-2 animate-fade-in",
+            isMobile ? "space-x-2 text-sm" : "space-x-3 md:space-x-4 md:mb-4"
+          )} style={{ animationDelay: "0.2s" }}>
+            {year && <span className={isMobile ? "text-sm" : "text-sm md:text-base"}>{year}</span>}
             {item.vote_average > 0 && (
               <span className="flex items-center">
                 <span className="text-yellow-400">★</span>
@@ -51,26 +63,32 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ item }) => {
             )}
           </div>
           
-          <p className="text-xs md:text-sm lg:text-base opacity-90 mb-4 md:mb-6 line-clamp-2 md:line-clamp-3 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className={cn(
+            "opacity-90 mb-3 animate-fade-in line-clamp-2",
+            isMobile ? "text-xs md:mb-4" : "text-xs md:text-sm lg:text-base md:line-clamp-3 md:mb-6"
+          )} style={{ animationDelay: "0.3s" }}>
             {item.overview}
           </p>
           
-          <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+          <div className={cn(
+            "flex flex-wrap animate-fade-in",
+            isMobile ? "gap-2" : "gap-3"
+          )} style={{ animationDelay: "0.4s" }}>
             <Button 
-              size={isMobile ? "sm" : "lg"} 
+              size="sm"
               className="rounded-full" 
               onClick={handleNavigate}
             >
-              <Play className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+              <Play className="h-3 w-3 mr-1" />
               Watch Now
             </Button>
             <Button 
               variant="outline" 
-              size={isMobile ? "sm" : "lg"} 
+              size="sm"
               className="rounded-full" 
               onClick={handleNavigate}
             >
-              <Info className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+              <Info className="h-3 w-3 mr-1" />
               More Info
             </Button>
           </div>

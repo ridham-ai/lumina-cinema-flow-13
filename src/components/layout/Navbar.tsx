@@ -35,38 +35,47 @@ const Navbar = () => {
     { path: "/watchlist", icon: BookmarkPlus, label: "Watchlist" },
   ];
 
-  // Mobile bottom navigation bar
+  // Mobile navigation
   if (isMobile) {
     return (
       <>
-        <div className="pb-20"> {/* Add padding to main content to account for fixed bottom bar */}
-          {/* Search overlay */}
-          <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-        </div>
-        <nav className="fixed bottom-0 left-0 right-0 z-50 glass-morphism border-t border-white/10">
-          <div className="flex items-center justify-around px-1 py-2">
+        {/* Mobile top header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
+          <div className="flex items-center justify-center px-4 py-3">
+            <Link to="/" className="flex items-center">
+              <h1 className="text-lg font-bold text-gradient">LUMINA</h1>
+            </Link>
+          </div>
+        </header>
+
+        {/* Search overlay */}
+        <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+        {/* Mobile bottom navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-white/10 safe-area-pb">
+          <div className="flex items-center justify-around px-2 py-2">
             {navigationItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center p-2",
+                  "flex flex-col items-center p-2 min-w-0 flex-1",
                   isActive(item.path) ? "text-primary" : "text-muted-foreground"
                 )}
               >
-                <item.icon className={cn("h-5 w-5", isActive(item.path) && "text-primary")} />
-                <span className="text-[10px] mt-1">{item.label}</span>
+                <item.icon className="h-5 w-5 mb-1" />
+                <span className="text-[10px] leading-none">{item.label}</span>
                 {isActive(item.path) && (
-                  <span className="absolute bottom-1 h-1 w-1 rounded-full bg-primary"></span>
+                  <div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary"></div>
                 )}
               </Link>
             ))}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex flex-col items-center p-2 text-muted-foreground"
+              className="flex flex-col items-center p-2 text-muted-foreground min-w-0 flex-1"
             >
-              <Search className="h-5 w-5" />
-              <span className="text-[10px] mt-1">Search</span>
+              <Search className="h-5 w-5 mb-1" />
+              <span className="text-[10px] leading-none">Search</span>
             </button>
           </div>
         </nav>

@@ -30,7 +30,7 @@ const AppContent = () => {
   return (
     <BrowserRouter>
       <Navbar />
-      <main className={`min-h-screen ${isMobile ? "pb-20" : ""}`}>
+      <main className={`min-h-screen ${isMobile ? "pt-16 pb-20" : ""}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/movies" element={<MoviesPage />} />
