@@ -1,10 +1,10 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Info } from "lucide-react";
 import { MediaItem, getImageUrl, MediaType } from "@/services/tmdb";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface FeaturedBannerProps {
   item: MediaItem;
