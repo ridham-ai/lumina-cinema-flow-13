@@ -49,7 +49,6 @@
 
   html {
     @apply scroll-smooth;
-    scroll-behavior: smooth;
   }
 }
 
@@ -65,8 +64,6 @@
 
   .glass-morphism {
     @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
-    will-change: transform;
-    transform: translateZ(0);
   }
   
   .neo-blur {
@@ -78,19 +75,11 @@
   }
 
   .card-hover {
-    @apply transition-all duration-200 ease-out;
-    will-change: transform;
-    transform: translateZ(0);
-  }
-  
-  .card-hover:hover {
-    @apply scale-[1.02] -translate-y-1 shadow-lg;
+    @apply transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-lg;
   }
   
   .nav-item {
-    @apply relative flex flex-col items-center transition-all duration-200 ease-out;
-    will-change: transform;
-    transform: translateZ(0);
+    @apply relative flex flex-col items-center transition-all duration-300;
   }
   
   .nav-item-active {
@@ -98,7 +87,7 @@
   }
   
   .nav-item-indicator {
-    @apply absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full opacity-0 transition-all duration-200;
+    @apply absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full opacity-0 transition-all;
   }
   
   .nav-item-active .nav-item-indicator {
@@ -107,56 +96,5 @@
 
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  /* Optimize animations for performance */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
-    will-change: opacity, transform;
-  }
-
-  .animate-spin {
-    animation: spin 1s linear infinite;
-    will-change: transform;
-  }
-
-  /* Hardware acceleration for smooth animations */
-  .transform {
-    will-change: transform;
-    transform: translateZ(0);
-  }
-
-  .transition-all {
-    will-change: transform, opacity;
-    transform: translateZ(0);
-  }
-}
-
-/* Optimized keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-in,
-  .card-hover,
-  .nav-item,
-  .transition-all {
-    animation: none !important;
-    transition: none !important;
   }
 }
