@@ -19,18 +19,31 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
+      // Prevent background scrolling and ensure blur effect
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.height = "100%";
+      
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
     } else {
-      document.body.style.overflow = "auto";
+      // Restore background scrolling
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
       setQuery("");
       setResults([]);
     }
     
     return () => {
-      document.body.style.overflow = "auto";
+      // Cleanup on unmount
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
     };
   }, [isOpen]);
 
@@ -70,10 +83,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col animate-fade-in">
+    <div className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md backdrop-saturate-150 flex flex-col animate-fade-in">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <div className="glass-morphism flex items-center rounded-full w-full max-w-2xl mx-auto overflow-hidden px-6 py-3">
+          <div className="glass-morphism flex items-center rounded-full w-full max-w-2xl mx-auto overflow-hidden px-6 py-3 bg-white/10 backdrop-blur-xl border border-white/20">
             <Search className="h-5 w-5 mr-3 text-muted-foreground flex-shrink-0" />
             <input
               ref={inputRef}
@@ -91,7 +104,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
           </div>
           <button 
             onClick={onClose}
-            className="ml-4 p-2 glass-morphism rounded-full hover:bg-white/10 transition-colors"
+            className="ml-4 p-2 glass-morphism rounded-full hover:bg-white/10 transition-colors bg-white/10 backdrop-blur-xl border border-white/20"
           >
             <X className="h-6 w-6" />
           </button>
@@ -102,7 +115,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
             <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
             {query.length > 0 && (
               <div className="mb-4">
                 {results.length === 0 ? (
@@ -118,7 +131,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                         <div 
                           key={`${item.media_type}-${item.id}`}
                           onClick={() => handleItemClick(item)}
-                          className="glass-morphism rounded-lg overflow-hidden card-hover cursor-pointer"
+                          className="glass-morphism rounded-lg overflow-hidden card-hover cursor-pointer bg-white/5 backdrop-blur-xl border border-white/10"
                         >
                           <div className="aspect-[2/3] relative">
                             <img 
@@ -126,7 +139,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                               alt={item.title || item.name}
                               className="w-full h-full object-cover"
                             />
-                            <div className="absolute top-2 right-2 glass-morphism rounded-full px-2 py-1 text-xs flex items-center">
+                            <div className="absolute top-2 right-2 glass-morphism rounded-full px-2 py-1 text-xs flex items-center bg-black/50 backdrop-blur-sm">
                               {item.media_type === "movie" 
                                 ? <Film className="h-3 w-3 mr-1" /> 
                                 : <Tv className="h-3 w-3 mr-1" />}
@@ -149,7 +162,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                       <div className="mt-6 text-center">
                         <button 
                           onClick={handleViewAll}
-                          className="glass-morphism inline-flex items-center px-4 py-2 rounded-full hover:bg-white/10 transition-colors"
+                          className="glass-morphism inline-flex items-center px-4 py-2 rounded-full hover:bg-white/10 transition-colors bg-white/5 backdrop-blur-xl border border-white/10"
                         >
                           View all results
                           <ArrowRight className="h-4 w-4 ml-2" />
