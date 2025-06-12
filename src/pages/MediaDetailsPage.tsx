@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { 
@@ -10,6 +9,8 @@ import {
 } from "@/services/tmdb";
 import MediaHero from "@/components/media/MediaHero";
 import MediaRow from "@/components/media/MediaRow";
+import EpisodeSelector from "@/components/media/EpisodeSelector";
+import ServerSelector from "@/components/media/ServerSelector";
 import { toast } from "sonner";
 
 const MediaDetailsPage: React.FC = () => {
@@ -19,6 +20,10 @@ const MediaDetailsPage: React.FC = () => {
   const [item, setItem] = useState<DetailedMediaItem | null>(null);
   const [recommendations, setRecommendations] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedSeason, setSelectedSeason] = useState(1);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [showServerSelector, setShowServerSelector] = useState(false);
+  const [seasons, setSeasons] = useState<any[]>([]);
   
   useEffect(() => {
     const fetchDetails = async () => {
@@ -36,6 +41,15 @@ const MediaDetailsPage: React.FC = () => {
         console.log("Details data received:", detailsData);
         setItem(detailsData);
         setRecommendations(recommendationsData.results);
+
+        // Fetch seasons for TV shows
+        if (mediaType === "tv") {
+          const seasonsResponse = await fetch(
+            `https://api.themoviedb.org/3/tv/${id}?api_key=08c748f7d51cbcbf3189168114145568`
+          );
+          const seasonsData = await seasonsResponse.json();
+          setSeasons(seasonsData.seasons || []);
+        }
       } catch (error) {
         console.error("Error fetching media details:", error);
         toast.error("Failed to load content details");
@@ -49,6 +63,17 @@ const MediaDetailsPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [mediaType, id]);
 
+  const handleEpisodeSelect = (season: number, episode: number) => {
+    setSelectedSeason(season);
+    setSelectedEpisode(episode);
+    setShowServerSelector(true);
+  };
+
+  const handleServerSelect = (serverUrl: string) => {
+    // This will be handled by the ServerSelector component
+    setShowServerSelector(false);
+  };
+
   if (loading || !item) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -59,7 +84,12 @@ const MediaDetailsPage: React.FC = () => {
 
   return (
     <div>
-      <MediaHero item={item} mediaType={mediaType as MediaType} />
+      <MediaHero 
+        item={item} 
+        mediaType={mediaType as MediaType}
+        selectedSeason={selectedSeason}
+        selectedEpisode={selectedEpisode}
+      />
       
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -146,6 +176,17 @@ const MediaDetailsPage: React.FC = () => {
           </div>
         </div>
         
+        {/* Episode selector for TV shows */}
+        {mediaType === "tv" && seasons.length > 0 && (
+          <div className="mt-12">
+            <EpisodeSelector
+              seasons={seasons}
+              onEpisodeSelect={handleEpisodeSelect}
+              tvShowId={parseInt(id!)}
+            />
+          </div>
+        )}
+        
         {/* Recommendations */}
         {recommendations.length > 0 && (
           <MediaRow 
@@ -154,6 +195,17 @@ const MediaDetailsPage: React.FC = () => {
           />
         )}
       </div>
+
+      {/* Server Selector for Episodes */}
+      <ServerSelector
+        isOpen={showServerSelector}
+        onClose={() => setShowServerSelector(false)}
+        onServerSelect={handleServerSelect}
+        item={item}
+        mediaType={mediaType as MediaType}
+        season={selectedSeason}
+        episode={selectedEpisode}
+      />
     </div>
   );
 };

@@ -11,9 +11,16 @@ import ServerSelector from "./ServerSelector";
 interface MediaHeroProps {
   item: DetailedMediaItem;
   mediaType: "movie" | "tv";
+  selectedSeason?: number;
+  selectedEpisode?: number;
 }
 
-const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
+const MediaHero: React.FC<MediaHeroProps> = ({ 
+  item, 
+  mediaType, 
+  selectedSeason = 1, 
+  selectedEpisode = 1 
+}) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMedia();
   const inWatchlist = isInWatchlist(item.id);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -162,23 +169,25 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
         onServerSelect={handleServerSelect}
         item={item}
         mediaType={mediaType}
+        season={selectedSeason}
+        episode={selectedEpisode}
       />
       
       {/* Trailer Modal */}
       {showTrailer && trailer && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-5xl aspect-video">
+          <div className="relative w-full max-w-4xl aspect-video">
             <Button
               variant="outline"
               size="icon"
-              className="absolute -top-12 right-0 rounded-full bg-black/50 text-white border-none hover:bg-black/80"
+              className="absolute -top-14 right-0 rounded-full bg-black/70 text-white border-white/20 hover:bg-black/90 z-10"
               onClick={() => setShowTrailer(false)}
             >
               <X className="h-5 w-5" />
             </Button>
             <iframe
               src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
-              className="w-full h-full"
+              className="w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Trailer"
@@ -187,14 +196,14 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
         </div>
       )}
 
-      {/* Player Modal */}
+      {/* Player Modal - Made smaller */}
       {showPlayer && selectedServerUrl && (
         <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-6xl aspect-video">
+          <div className="relative w-full max-w-4xl aspect-video">
             <Button
               variant="outline"
               size="icon"
-              className="absolute -top-12 right-0 rounded-full bg-black/50 text-white border-none hover:bg-black/80"
+              className="absolute -top-14 right-0 rounded-full bg-black/70 text-white border-white/20 hover:bg-black/90 z-10"
               onClick={() => {
                 setShowPlayer(false);
                 setSelectedServerUrl("");

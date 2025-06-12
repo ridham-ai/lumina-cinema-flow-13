@@ -35,8 +35,6 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
   const servers = [
     {
       id: 1,
-      name: "Server 1 (Vidora)",
-      description: "Primary streaming server",
       getUrl: () => {
         if (mediaType === "movie") {
           return `https://vidora.su/movie/${item.id}`;
@@ -47,8 +45,6 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
     },
     {
       id: 2,
-      name: "Server 2 (Videasy)",
-      description: "Alternative streaming server",
       getUrl: () => {
         if (mediaType === "movie") {
           return `https://player.videasy.net/movie/${item.id}`;
@@ -59,8 +55,6 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
     },
     {
       id: 3,
-      name: "Server 3 (AutoEmbed)",
-      description: "High quality streaming",
       getUrl: () => {
         if (mediaType === "movie") {
           return `https://player.autoembed.cc/embed/movie/${item.id}`;
@@ -71,8 +65,6 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
     },
     {
       id: 4,
-      name: "Server 4 (VidLink)",
-      description: "Fast streaming server",
       getUrl: () => {
         if (mediaType === "movie") {
           return `https://vidlink.pro/movie/${item.id}`;
@@ -95,7 +87,7 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Server className="h-5 w-5" />
-            Select Streaming Server
+            Select Server
           </DialogTitle>
         </DialogHeader>
         
@@ -109,19 +101,14 @@ const ServerSelector: React.FC<ServerSelectorProps> = ({
               <Button
                 key={server.id}
                 variant="outline"
-                className="w-full justify-start h-auto p-4 hover:bg-primary/5"
+                className="w-full justify-center h-12 hover:bg-primary/5"
                 onClick={() => handleServerSelect(server)}
               >
-                <div className="flex items-center gap-3 w-full">
+                <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
                     <Play className="h-4 w-4" />
                   </div>
-                  <div className="flex-1 text-left">
-                    <div className="font-medium">{server.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {server.description}
-                    </div>
-                  </div>
+                  <span className="font-medium">Server {server.id}</span>
                 </div>
               </Button>
             ))}
