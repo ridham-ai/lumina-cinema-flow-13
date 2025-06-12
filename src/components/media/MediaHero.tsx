@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DetailedMediaItem, getImageUrl } from "@/services/tmdb";
 import { useMedia } from "@/contexts/MediaContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ServerSelector from "./ServerSelector";
 
 interface MediaHeroProps {
   item: DetailedMediaItem;
@@ -17,6 +18,8 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   const inWatchlist = isInWatchlist(item.id);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showPlayer, setShowPlayer] = useState(false);
+  const [showServerSelector, setShowServerSelector] = useState(false);
+  const [selectedServerUrl, setSelectedServerUrl] = useState("");
   const isMobile = useIsMobile();
   
   const handleWatchlistToggle = () => {
@@ -38,15 +41,13 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
     return `${hours}h ${mins}m`;
   };
 
-  // Generate the Vidora.su URL based on media type
-  const getPlayerUrl = () => {
-    if (mediaType === "movie") {
-      return `https://vidora.su/movie/${item.id}`;
-    } else if (mediaType === "tv") {
-      // For TV shows, we'll default to season 1, episode 1
-      return `https://vidora.su/tv/${item.id}/1/1`;
-    }
-    return "";
+  const handleWatchNow = () => {
+    setShowServerSelector(true);
+  };
+
+  const handleServerSelect = (serverUrl: string) => {
+    setSelectedServerUrl(serverUrl);
+    setShowPlayer(true);
   };
   
   return (
@@ -120,7 +121,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               <Button 
                 size={isMobile ? "sm" : "lg"} 
                 className="rounded-full"
-                onClick={() => setShowPlayer(true)}
+                onClick={handleWatchNow}
               >
                 <Play className="h-4 w-4 mr-2" />
                 Watch Now
@@ -154,6 +155,15 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
         </div>
       </div>
       
+      {/* Server Selector Modal */}
+      <ServerSelector
+        isOpen={showServerSelector}
+        onClose={() => setShowServerSelector(false)}
+        onServerSelect={handleServerSelect}
+        item={item}
+        mediaType={mediaType}
+      />
+      
       {/* Trailer Modal */}
       {showTrailer && trailer && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
@@ -177,20 +187,23 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
         </div>
       )}
 
-      {/* Vidora.su Player Modal - Removed sandbox restrictions */}
-      {showPlayer && (
+      {/* Player Modal */}
+      {showPlayer && selectedServerUrl && (
         <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
           <div className="relative w-full max-w-6xl aspect-video">
             <Button
               variant="outline"
               size="icon"
               className="absolute -top-12 right-0 rounded-full bg-black/50 text-white border-none hover:bg-black/80"
-              onClick={() => setShowPlayer(false)}
+              onClick={() => {
+                setShowPlayer(false);
+                setSelectedServerUrl("");
+              }}
             >
               <X className="h-5 w-5" />
             </Button>
             <iframe
-              src={getPlayerUrl()}
+              src={selectedServerUrl}
               className="w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               allowFullScreen
