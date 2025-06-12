@@ -41,11 +41,10 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
   // Generate the Vidora.su URL based on media type
   const getPlayerUrl = () => {
     if (mediaType === "movie") {
-      return `https://vidora.su/movie/${item.id}?parameters`;
+      return `https://vidora.su/movie/${item.id}`;
     } else if (mediaType === "tv") {
       // For TV shows, we'll default to season 1, episode 1
-      // You might want to enhance this later to select the correct episode
-      return `https://vidora.su/tv/${item.id}/1/1?parameters`;
+      return `https://vidora.su/tv/${item.id}/1/1`;
     }
     return "";
   };
@@ -173,12 +172,12 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Trailer"
-            ></iframe>
+            />
           </div>
         </div>
       )}
 
-      {/* Vidora.su Player Modal */}
+      {/* Vidora.su Player Modal - Removed sandbox restrictions */}
       {showPlayer && (
         <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
           <div className="relative w-full max-w-6xl aspect-video">
@@ -195,8 +194,9 @@ const MediaHero: React.FC<MediaHeroProps> = ({ item, mediaType }) => {
               className="w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               allowFullScreen
+              referrerPolicy="no-referrer"
               title={`Watch ${item.title || item.name}`}
-            ></iframe>
+            />
           </div>
         </div>
       )}
