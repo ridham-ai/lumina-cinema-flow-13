@@ -13,20 +13,24 @@ interface MediaHeroProps {
   mediaType: "movie" | "tv";
   selectedSeason?: number;
   selectedEpisode?: number;
+  showPlayer?: boolean;
+  selectedServerUrl?: string;
+  onPlayerClose?: () => void;
 }
 
 const MediaHero: React.FC<MediaHeroProps> = ({ 
   item, 
   mediaType, 
   selectedSeason = 1, 
-  selectedEpisode = 1 
+  selectedEpisode = 1,
+  showPlayer = false,
+  selectedServerUrl = "",
+  onPlayerClose
 }) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMedia();
   const inWatchlist = isInWatchlist(item.id);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [showPlayer, setShowPlayer] = useState(false);
   const [showServerSelector, setShowServerSelector] = useState(false);
-  const [selectedServerUrl, setSelectedServerUrl] = useState("");
   const isMobile = useIsMobile();
   
   const handleWatchlistToggle = () => {
@@ -53,8 +57,14 @@ const MediaHero: React.FC<MediaHeroProps> = ({
   };
 
   const handleServerSelect = (serverUrl: string) => {
-    setSelectedServerUrl(serverUrl);
-    setShowPlayer(true);
+    console.log("MediaHero: Server selected with URL:", serverUrl);
+    if (onPlayerClose) {
+      // If we have an onPlayerClose prop, it means the parent is managing the player state
+      setShowServerSelector(false);
+    } else {
+      // Fallback to local state management
+      setShowServerSelector(false);
+    }
   };
   
   return (
@@ -204,10 +214,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({
               variant="outline"
               size="icon"
               className="absolute -top-14 right-0 rounded-full bg-black/70 text-white border-white/20 hover:bg-black/90 z-10"
-              onClick={() => {
-                setShowPlayer(false);
-                setSelectedServerUrl("");
-              }}
+              onClick={onPlayerClose}
             >
               <X className="h-5 w-5" />
             </Button>

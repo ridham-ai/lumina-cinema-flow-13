@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { 
@@ -24,6 +25,8 @@ const MediaDetailsPage: React.FC = () => {
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [showServerSelector, setShowServerSelector] = useState(false);
   const [seasons, setSeasons] = useState<any[]>([]);
+  const [showPlayer, setShowPlayer] = useState(false);
+  const [selectedServerUrl, setSelectedServerUrl] = useState("");
   
   useEffect(() => {
     const fetchDetails = async () => {
@@ -64,14 +67,17 @@ const MediaDetailsPage: React.FC = () => {
   }, [mediaType, id]);
 
   const handleEpisodeSelect = (season: number, episode: number) => {
+    console.log("Episode selected:", season, episode);
     setSelectedSeason(season);
     setSelectedEpisode(episode);
     setShowServerSelector(true);
   };
 
   const handleServerSelect = (serverUrl: string) => {
-    // This will be handled by the ServerSelector component
+    console.log("Server selected with URL:", serverUrl);
+    setSelectedServerUrl(serverUrl);
     setShowServerSelector(false);
+    setShowPlayer(true);
   };
 
   if (loading || !item) {
@@ -89,19 +95,36 @@ const MediaDetailsPage: React.FC = () => {
         mediaType={mediaType as MediaType}
         selectedSeason={selectedSeason}
         selectedEpisode={selectedEpisode}
+        showPlayer={showPlayer}
+        selectedServerUrl={selectedServerUrl}
+        onPlayerClose={() => {
+          setShowPlayer(false);
+          setSelectedServerUrl("");
+        }}
       />
       
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
+            {/* Episode selector for TV shows - moved to top */}
+            {mediaType === "tv" && seasons.length > 0 && (
+              <div className="mb-12">
+                <EpisodeSelector
+                  seasons={seasons}
+                  onEpisodeSelect={handleEpisodeSelect}
+                  tvShowId={parseInt(id!)}
+                />
+              </div>
+            )}
+            
             <h2 className="text-2xl font-semibold mb-4">Overview</h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-8">
               {item.overview || "No overview available."}
             </p>
             
             {/* Cast section */}
             {item.credits?.cast && item.credits.cast.length > 0 && (
-              <div className="mt-8">
+              <div>
                 <h2 className="text-2xl font-semibold mb-4">Cast</h2>
                 <div className="flex flex-wrap gap-4">
                   {item.credits.cast.slice(0, 6).map((person) => (
@@ -175,17 +198,6 @@ const MediaDetailsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        {/* Episode selector for TV shows */}
-        {mediaType === "tv" && seasons.length > 0 && (
-          <div className="mt-12">
-            <EpisodeSelector
-              seasons={seasons}
-              onEpisodeSelect={handleEpisodeSelect}
-              tvShowId={parseInt(id!)}
-            />
-          </div>
-        )}
         
         {/* Recommendations */}
         {recommendations.length > 0 && (
