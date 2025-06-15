@@ -11,67 +11,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [backgroundBrightness, setBackgroundBrightness] = useState(0.5);
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const isMobile = useIsMobile();
 
   const isActive = (path: string) => location.pathname === path;
-
-  // Analyze background brightness to adjust navbar transparency
-  useEffect(() => {
-    const analyzeBackground = () => {
-      const heroSection = document.querySelector('[class*="banner"], [class*="hero"], .featured-content');
-      if (heroSection) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = heroSection.querySelector('img');
-        
-        if (img && img.complete) {
-          canvas.width = 100;
-          canvas.height = 100;
-          ctx?.drawImage(img, 0, 0, 100, 100);
-          
-          try {
-            const imageData = ctx?.getImageData(0, 0, 100, 100);
-            if (imageData) {
-              let brightness = 0;
-              for (let i = 0; i < imageData.data.length; i += 4) {
-                const r = imageData.data[i];
-                const g = imageData.data[i + 1];
-                const b = imageData.data[i + 2];
-                brightness += (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-              }
-              const avgBrightness = brightness / (imageData.data.length / 4);
-              setBackgroundBrightness(avgBrightness);
-            }
-          } catch (error) {
-            // Fallback if canvas analysis fails
-            setBackgroundBrightness(0.5);
-          }
-        }
-      }
-    };
-
-    // Analyze on component mount and when images load
-    analyzeBackground();
-    
-    // Re-analyze when new images load
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-      if (img.complete) {
-        analyzeBackground();
-      } else {
-        img.addEventListener('load', analyzeBackground);
-      }
-    });
-
-    return () => {
-      images.forEach(img => {
-        img.removeEventListener('load', analyzeBackground);
-      });
-    };
-  }, [location.pathname]);
 
   // Check if page is scrolled to add background to navbar
   useEffect(() => {
@@ -82,26 +26,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Calculate adaptive transparency based on background brightness
-  const getAdaptiveStyles = () => {
-    const isDarkBackground = backgroundBrightness < 0.4;
-    const isBrightBackground = backgroundBrightness > 0.7;
-    
-    if (isScrolled) {
-      return isDarkBackground 
-        ? "adaptive-nav-dark-scrolled"
-        : isBrightBackground 
-        ? "adaptive-nav-bright-scrolled"
-        : "adaptive-nav-medium-scrolled";
-    } else {
-      return isDarkBackground 
-        ? "adaptive-nav-dark"
-        : isBrightBackground 
-        ? "adaptive-nav-bright"
-        : "adaptive-nav-medium";
-    }
-  };
 
   // Navigation items shared between mobile and desktop
   const navigationItems = [
@@ -116,10 +40,7 @@ const Navbar = () => {
     return (
       <>
         {/* Mobile top header */}
-        <header className={cn(
-          "fixed top-0 left-0 right-0 z-50 border-b border-white/10 transition-all duration-500",
-          getAdaptiveStyles()
-        )}>
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
           <div className="flex items-center justify-center px-4 py-3">
             <Link to="/" className="flex items-center">
               <h1 className="text-lg font-bold text-gradient">LUMINA</h1>
@@ -167,7 +88,7 @@ const Navbar = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        getAdaptiveStyles()
+        isScrolled ? "glass-morphism backdrop-blur-xl" : "bg-transparent"
       )}
     >
       <div className="container mx-auto px-4 py-4">
@@ -179,7 +100,8 @@ const Navbar = () => {
 
           {/* Main Navigation */}
           <nav className={cn(
-            "adaptive-nav-glass rounded-full px-4 md:px-8 py-3 transition-all duration-300"
+            "glass-morphism rounded-full px-4 md:px-8 py-3 transition-all duration-300",
+            isScrolled ? "shadow-lg bg-white/10" : "bg-white/5"
           )}>
             <ul className="flex items-center space-x-4 md:space-x-10">
               <li>

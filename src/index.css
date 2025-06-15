@@ -97,33 +97,4 @@
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
   }
-
-  /* Adaptive Navigation Styles */
-  .adaptive-nav-dark {
-    @apply bg-black/20 backdrop-blur-sm border-b border-white/5;
-  }
-  
-  .adaptive-nav-dark-scrolled {
-    @apply bg-black/60 backdrop-blur-xl border-b border-white/20 shadow-lg;
-  }
-  
-  .adaptive-nav-medium {
-    @apply bg-black/30 backdrop-blur-md border-b border-white/10;
-  }
-  
-  .adaptive-nav-medium-scrolled {
-    @apply bg-black/70 backdrop-blur-xl border-b border-white/20 shadow-lg;
-  }
-  
-  .adaptive-nav-bright {
-    @apply bg-black/50 backdrop-blur-lg border-b border-white/15;
-  }
-  
-  .adaptive-nav-bright-scrolled {
-    @apply bg-black/80 backdrop-blur-xl border-b border-white/25 shadow-xl;
-  }
-  
-  .adaptive-nav-glass {
-    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
-  }
 }
