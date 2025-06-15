@@ -17,10 +17,11 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Check if page is scrolled to add background to navbar
+  // Enhanced scroll detection with smooth transitions
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -39,11 +40,13 @@ const Navbar = () => {
   if (isMobile) {
     return (
       <>
-        {/* Mobile top header with liquid glass effect */}
-        <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
-          <div className="flex items-center justify-center px-4 py-3">
-            <Link to="/" className="flex items-center">
-              <h1 className="text-lg font-bold text-gradient liquid-text">LUMINA</h1>
+        {/* Mobile top header with enhanced glassmorphism */}
+        <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl bg-black/20 border-b border-white/10 shadow-2xl">
+          <div className="flex items-center justify-center px-4 py-4">
+            <Link to="/" className="flex items-center group">
+              <h1 className="text-xl font-display font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+                LUMINA
+              </h1>
             </Link>
           </div>
         </header>
@@ -51,38 +54,37 @@ const Navbar = () => {
         {/* Search overlay */}
         <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-        {/* Mobile bottom navigation with liquid glass effect */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 liquid-glass-bottom border-t border-white/20 safe-area-pb">
-          <div className="flex items-center justify-around px-2 py-2">
+        {/* Mobile bottom navigation with enhanced design */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-3xl bg-black/30 border-t border-white/15 shadow-2xl safe-area-pb">
+          <div className="flex items-center justify-around px-2 py-3">
             {navigationItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center p-3 min-w-0 flex-1 transition-all duration-500 liquid-nav-item",
-                  isActive(item.path) ? "text-primary liquid-active" : "text-muted-foreground hover:text-primary"
+                  "flex flex-col items-center p-3 min-w-0 flex-1 transition-all duration-300 rounded-xl",
+                  isActive(item.path) 
+                    ? "text-white bg-white/10 shadow-lg" 
+                    : "text-white/70 hover:text-white hover:bg-white/5"
                 )}
               >
-                <div className="relative">
-                  <item.icon className="h-5 w-5 mb-1 transition-transform duration-300" />
+                <div className="relative mb-1">
+                  <item.icon className="h-5 w-5 transition-transform duration-300" />
                   {isActive(item.path) && (
-                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-md animate-pulse"></div>
+                    <div className="absolute -inset-1 bg-white/20 rounded-full blur-sm"></div>
                   )}
                 </div>
-                <span className="text-[10px] leading-none font-medium">{item.label}</span>
-                {isActive(item.path) && (
-                  <div className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-primary liquid-indicator"></div>
-                )}
+                <span className="text-[10px] leading-none font-medium font-display">{item.label}</span>
               </Link>
             ))}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex flex-col items-center p-3 text-muted-foreground min-w-0 flex-1 transition-all duration-500 liquid-nav-item hover:text-primary"
+              className="flex flex-col items-center p-3 text-white/70 min-w-0 flex-1 transition-all duration-300 rounded-xl hover:text-white hover:bg-white/5"
             >
-              <div className="relative">
-                <Search className="h-5 w-5 mb-1 transition-transform duration-300" />
+              <div className="relative mb-1">
+                <Search className="h-5 w-5 transition-transform duration-300" />
               </div>
-              <span className="text-[10px] leading-none font-medium">Search</span>
+              <span className="text-[10px] leading-none font-medium font-display">Search</span>
             </button>
           </div>
         </nav>
@@ -90,140 +92,112 @@ const Navbar = () => {
     );
   }
 
-  // Desktop navigation with enhanced liquid glass design
+  // Desktop navigation with sophisticated design
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-700",
-        isScrolled ? "liquid-glass-header backdrop-blur-3xl" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out",
+        isScrolled 
+          ? "backdrop-blur-3xl bg-black/25 shadow-2xl border-b border-white/10" 
+          : "backdrop-blur-xl bg-black/10"
       )}
     >
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo with liquid effect */}
+          {/* Enhanced Logo */}
           <Link to="/" className="flex items-center group">
-            <h1 className="text-2xl font-bold text-gradient liquid-text group-hover:scale-105 transition-transform duration-300">
-              LUMINA
-            </h1>
+            <div className="relative">
+              <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-white via-white/95 to-white/80 bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105">
+                LUMINA
+              </h1>
+              <div className="absolute -inset-2 bg-gradient-to-r from-white/10 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+            </div>
           </Link>
 
-          {/* Main Navigation with enhanced liquid glass */}
+          {/* Enhanced Main Navigation */}
           <nav className={cn(
-            "liquid-glass-nav rounded-full px-6 md:px-10 py-4 transition-all duration-500 hover:scale-105",
-            isScrolled ? "shadow-2xl bg-white/15 border border-white/30" : "bg-white/10 border border-white/20"
+            "relative backdrop-blur-2xl rounded-2xl px-8 py-4 transition-all duration-500 border",
+            isScrolled 
+              ? "bg-white/15 border-white/25 shadow-2xl" 
+              : "bg-white/10 border-white/20 shadow-xl"
           )}>
-            <ul className="flex items-center space-x-6 md:space-x-12">
-              <li>
-                <Link
-                  to="/"
-                  className={cn(
-                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
-                    isActive("/") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
-                  )}
-                >
-                  <div className={cn(
-                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
-                    isActive("/") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
-                  )} />
-                  <div className="relative">
-                    <Home className="h-5 w-5 transition-all duration-300" />
-                    {isActive("/") && (
-                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-transparent to-white/5 rounded-2xl"></div>
+            <ul className="relative flex items-center space-x-8">
+              {navigationItems.map((item) => (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    className={cn(
+                      "flex flex-col items-center transition-all duration-300 relative group px-3 py-2 rounded-xl",
+                      isActive(item.path) 
+                        ? "text-white bg-white/15 shadow-lg transform scale-105" 
+                        : "text-white/80 hover:text-white hover:bg-white/10 hover:scale-105"
                     )}
-                  </div>
-                  <span className="text-xs mt-2 font-semibold liquid-text">Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/movies"
-                  className={cn(
-                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
-                    isActive("/movies") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
-                  )}
-                >
-                  <div className={cn(
-                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
-                    isActive("/movies") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
-                  )} />
-                  <div className="relative">
-                    <Film className="h-5 w-5 transition-all duration-300" />
-                    {isActive("/movies") && (
-                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-                    )}
-                  </div>
-                  <span className="text-xs mt-2 font-semibold liquid-text">Movies</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/tv"
-                  className={cn(
-                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
-                    isActive("/tv") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
-                  )}
-                >
-                  <div className={cn(
-                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
-                    isActive("/tv") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
-                  )} />
-                  <div className="relative">
-                    <Tv className="h-5 w-5 transition-all duration-300" />
-                    {isActive("/tv") && (
-                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-                    )}
-                  </div>
-                  <span className="text-xs mt-2 font-semibold liquid-text">TV Shows</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/watchlist"
-                  className={cn(
-                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
-                    isActive("/watchlist") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
-                  )}
-                >
-                  <div className={cn(
-                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
-                    isActive("/watchlist") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
-                  )} />
-                  <div className="relative">
-                    <BookmarkPlus className="h-5 w-5 transition-all duration-300" />
-                    {isActive("/watchlist") && (
-                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-                    )}
-                  </div>
-                  <span className="text-xs mt-2 font-semibold liquid-text">Watchlist</span>
-                </Link>
-              </li>
+                  >
+                    <div className="relative mb-2">
+                      <item.icon className="h-5 w-5 transition-all duration-300" />
+                      {isActive(item.path) && (
+                        <div className="absolute -inset-2 bg-white/25 rounded-full blur-md animate-pulse"></div>
+                      )}
+                    </div>
+                    <span className="text-xs font-semibold font-display tracking-wide">
+                      {item.label}
+                    </span>
+                    
+                    {/* Enhanced Active Indicator */}
+                    <div className={cn(
+                      "absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-300",
+                      isActive(item.path) 
+                        ? "bg-white opacity-100 shadow-lg shadow-white/50" 
+                        : "opacity-0"
+                    )} />
+                    
+                    {/* Hover Effect Background */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </Link>
+                </li>
+              ))}
+              
+              {/* Search Button */}
               <li>
                 <button
                   onClick={() => setSearchOpen(true)}
                   className={cn(
-                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
-                    searchOpen ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
+                    "flex flex-col items-center transition-all duration-300 relative group px-3 py-2 rounded-xl",
+                    searchOpen 
+                      ? "text-white bg-white/15 shadow-lg transform scale-105" 
+                      : "text-white/80 hover:text-white hover:bg-white/10 hover:scale-105"
                   )}
                 >
-                  <div className={cn(
-                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
-                    searchOpen ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
-                  )} />
-                  <div className="relative">
+                  <div className="relative mb-2">
                     <Search className="h-5 w-5 transition-all duration-300" />
                     {searchOpen && (
-                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                      <div className="absolute -inset-2 bg-white/25 rounded-full blur-md animate-pulse"></div>
                     )}
                   </div>
-                  <span className="text-xs mt-2 font-semibold liquid-text">Search</span>
+                  <span className="text-xs font-semibold font-display tracking-wide">
+                    Search
+                  </span>
+                  
+                  <div className={cn(
+                    "absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-300",
+                    searchOpen 
+                      ? "bg-white opacity-100 shadow-lg shadow-white/50" 
+                      : "opacity-0"
+                  )} />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
               </li>
             </ul>
           </nav>
 
-          {/* Right side placeholder with liquid effect */}
-          <div className="w-[100px] flex justify-end">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl border border-white/20"></div>
+          {/* Enhanced Right Side Element */}
+          <div className="w-[120px] flex justify-end">
+            <div className="relative group">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/25"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+            </div>
           </div>
         </div>
       </div>

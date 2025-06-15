@@ -62,120 +62,65 @@
     display: none;
   }
 
+  /* Enhanced Glassmorphism Effects */
   .glass-morphism {
     @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
   }
 
-  /* Enhanced Liquid Glass Effects */
-  .liquid-glass {
-    @apply backdrop-blur-3xl bg-gradient-to-br from-white/15 via-white/10 to-white/5;
-    background-image: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  .glass-nav {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
-  .liquid-glass-header {
-    @apply backdrop-blur-3xl bg-gradient-to-b from-white/20 via-white/10 to-white/5;
-    background-image: 
-      linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15) 0%, transparent 70%);
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .liquid-glass-nav {
-    @apply backdrop-blur-2xl;
-    background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-    background-image: 
-      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%),
-      radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 60%);
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.4),
-      inset 0 2px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -2px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px rgba(255, 255, 255, 0.2);
+  .glass-nav-scrolled {
+    backdrop-filter: blur(24px);
+    background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-
-  .liquid-glass-bottom {
-    @apply backdrop-blur-3xl bg-gradient-to-t from-white/20 via-white/15 to-white/10;
-    background-image: 
-      radial-gradient(circle at 50% 100%, rgba(255,255,255,0.2) 0%, transparent 70%),
-      linear-gradient(0deg, rgba(255,255,255,0.1) 0%, transparent 50%);
     box-shadow: 
-      0 -8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+      0 12px 40px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
   }
 
-  .liquid-nav-item {
+  .nav-item-enhanced {
     position: relative;
-    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  .liquid-nav-item:hover {
-    transform: translateY(-2px) scale(1.05);
+  .nav-item-enhanced:hover {
+    transform: translateY(-1px) scale(1.02);
   }
 
-  .liquid-nav-item:before {
+  .nav-item-enhanced::before {
     content: '';
     position: absolute;
-    inset: -8px;
+    inset: -4px;
     background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    border-radius: 50%;
+    border-radius: 12px;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
 
-  .liquid-nav-item:hover:before {
+  .nav-item-enhanced:hover::before {
     opacity: 1;
   }
 
-  .liquid-active {
+  .nav-active-glow {
     position: relative;
   }
 
-  .liquid-active:after {
+  .nav-active-glow::after {
     content: '';
     position: absolute;
-    inset: -12px;
+    inset: -8px;
     background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
-    border-radius: 50%;
-    animation: liquid-pulse 2s ease-in-out infinite;
+    border-radius: 16px;
+    animation: gentle-pulse 2s ease-in-out infinite;
     pointer-events: none;
-  }
-
-  .liquid-indicator {
-    position: relative;
-    animation: liquid-glow 2s ease-in-out infinite alternate;
-  }
-
-  .liquid-indicator:before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    background: radial-gradient(circle, currentColor 0%, transparent 70%);
-    border-radius: 50%;
-    opacity: 0.5;
-    animation: liquid-pulse 1.5s ease-in-out infinite;
-  }
-
-  .liquid-text {
-    position: relative;
-    background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 50%, #ffffff 100%);
-    background-size: 200% 200%;
-    animation: liquid-text-flow 3s ease-in-out infinite;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
   
   .neo-blur {
@@ -210,33 +155,24 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Liquid Glass Animations */
-  @keyframes liquid-pulse {
+  /* Refined Animations */
+  @keyframes gentle-pulse {
     0%, 100% {
       transform: scale(1);
-      opacity: 0.5;
+      opacity: 0.3;
     }
     50% {
-      transform: scale(1.2);
-      opacity: 0.8;
+      transform: scale(1.05);
+      opacity: 0.6;
     }
   }
 
-  @keyframes liquid-glow {
+  @keyframes nav-glow {
     0% {
-      box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
     }
     100% {
-      box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
-    }
-  }
-
-  @keyframes liquid-text-flow {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
+      box-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.3);
     }
   }
 }
