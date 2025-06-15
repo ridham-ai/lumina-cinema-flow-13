@@ -80,6 +80,12 @@ const MediaDetailsPage: React.FC = () => {
     setShowPlayer(true);
   };
 
+  const handleHeroServerSelect = (serverUrl: string) => {
+    console.log("Hero server selected with URL:", serverUrl);
+    setSelectedServerUrl(serverUrl);
+    setShowPlayer(true);
+  };
+
   if (loading || !item) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -101,6 +107,7 @@ const MediaDetailsPage: React.FC = () => {
           setShowPlayer(false);
           setSelectedServerUrl("");
         }}
+        onServerSelect={handleHeroServerSelect}
       />
       
       <div className="container mx-auto px-4 py-12">

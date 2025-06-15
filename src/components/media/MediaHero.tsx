@@ -16,6 +16,7 @@ interface MediaHeroProps {
   showPlayer?: boolean;
   selectedServerUrl?: string;
   onPlayerClose?: () => void;
+  onServerSelect?: (serverUrl: string) => void;
 }
 
 const MediaHero: React.FC<MediaHeroProps> = ({ 
@@ -25,7 +26,8 @@ const MediaHero: React.FC<MediaHeroProps> = ({
   selectedEpisode = 1,
   showPlayer = false,
   selectedServerUrl = "",
-  onPlayerClose
+  onPlayerClose,
+  onServerSelect
 }) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMedia();
   const inWatchlist = isInWatchlist(item.id);
@@ -56,14 +58,16 @@ const MediaHero: React.FC<MediaHeroProps> = ({
     setShowServerSelector(true);
   };
 
-  const handleServerSelect = (serverUrl: string) => {
+  const handleServerSelectLocal = (serverUrl: string) => {
     console.log("MediaHero: Server selected with URL:", serverUrl);
-    if (onPlayerClose) {
-      // If we have an onPlayerClose prop, it means the parent is managing the player state
-      setShowServerSelector(false);
+    setShowServerSelector(false);
+    
+    // Use parent callback if provided, otherwise handle locally
+    if (onServerSelect) {
+      onServerSelect(serverUrl);
     } else {
-      // Fallback to local state management
-      setShowServerSelector(false);
+      // This shouldn't happen in the current implementation
+      console.log("No onServerSelect callback provided");
     }
   };
   
@@ -176,7 +180,7 @@ const MediaHero: React.FC<MediaHeroProps> = ({
       <ServerSelector
         isOpen={showServerSelector}
         onClose={() => setShowServerSelector(false)}
-        onServerSelect={handleServerSelect}
+        onServerSelect={handleServerSelectLocal}
         item={item}
         mediaType={mediaType}
         season={selectedSeason}
@@ -206,14 +210,14 @@ const MediaHero: React.FC<MediaHeroProps> = ({
         </div>
       )}
 
-      {/* Player Modal - Made smaller */}
+      {/* Player Modal */}
       {showPlayer && selectedServerUrl && (
         <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-4xl aspect-video">
+          <div className="relative w-full max-w-5xl aspect-video">
             <Button
               variant="outline"
               size="icon"
-              className="absolute -top-14 right-0 rounded-full bg-black/70 text-white border-white/20 hover:bg-black/90 z-10"
+              className="absolute -top-12 right-0 rounded-full bg-white/10 text-white border-white/20 hover:bg-white/20 z-10"
               onClick={onPlayerClose}
             >
               <X className="h-5 w-5" />
