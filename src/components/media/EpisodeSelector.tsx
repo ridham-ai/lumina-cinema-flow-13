@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Play, ChevronDown } from "lucide-react";
+import { Play, ChevronDown, Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import { getImageUrl } from "@/services/tmdb";
 
 interface Episode {
@@ -81,68 +82,146 @@ const EpisodeSelector: React.FC<EpisodeSelectorProps> = ({
   if (seasons.length === 0) return null;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <h2 className="text-2xl font-semibold">Episodes</h2>
-        <Select value={selectedSeason.toString()} onValueChange={handleSeasonChange}>
-          <SelectTrigger className="w-48 glass-morphism">
-            <SelectValue placeholder="Select Season" />
-          </SelectTrigger>
-          <SelectContent>
-            {seasons.map((season) => (
-              <SelectItem key={season.id} value={season.season_number.toString()}>
-                {season.name || `Season ${season.season_number}`}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            Episodes
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            {episodes.length} episodes available
+          </p>
+        </div>
+        
+        <div className="sm:ml-auto">
+          <Select value={selectedSeason.toString()} onValueChange={handleSeasonChange}>
+            <SelectTrigger className="w-64 h-12 glass-morphism border-white/20 bg-white/5 backdrop-blur-xl">
+              <SelectValue placeholder="Select Season" />
+            </SelectTrigger>
+            <SelectContent className="bg-black/90 backdrop-blur-xl border-white/20">
+              {seasons.map((season) => (
+                <SelectItem 
+                  key={season.id} 
+                  value={season.season_number.toString()}
+                  className="text-white hover:bg-white/10"
+                >
+                  {season.name || `Season ${season.season_number}`}
+                  <span className="ml-2 text-xs text-white/60">
+                    ({season.episode_count} episodes)
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
+      {/* Episodes Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+        <div className="flex items-center justify-center py-16">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin h-10 w-10 border-2 border-primary border-t-transparent rounded-full" />
+            <p className="text-muted-foreground">Loading episodes...</p>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {episodes.map((episode) => (
-            <div
+            <Card
               key={episode.id}
-              className="glass-morphism rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200"
+              className="group cursor-pointer bg-black/20 backdrop-blur-xl border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden"
               onClick={() => handleEpisodeClick(episode.episode_number)}
             >
-              <div className="relative aspect-video">
+              {/* Episode Thumbnail */}
+              <div className="relative aspect-video overflow-hidden">
                 <img
                   src={
                     getImageUrl(episode.still_path, "w500") ||
                     "/placeholder.svg"
                   }
                   alt={episode.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                  <Button size="icon" className="rounded-full">
-                    <Play className="h-4 w-4" />
-                  </Button>
+                
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 border border-white/30">
+                    <Play className="h-6 w-6 text-white fill-white" />
+                  </div>
                 </div>
-                <div className="absolute bottom-2 left-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                  Episode {episode.episode_number}
+                
+                {/* Episode Number Badge */}
+                <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full border border-white/20">
+                  Ep {episode.episode_number}
                 </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-medium text-sm mb-1 line-clamp-1">
-                  {episode.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {episode.overview || "No description available"}
-                </p>
-                {episode.air_date && (
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {new Date(episode.air_date).toLocaleDateString()}
-                  </p>
+                
+                {/* Runtime Badge */}
+                {episode.runtime && (
+                  <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded border border-white/20 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {episode.runtime}m
+                  </div>
                 )}
               </div>
-            </div>
+              
+              {/* Episode Info */}
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <h3 className="font-semibold text-white line-clamp-2 group-hover:text-primary transition-colors">
+                    {episode.name}
+                  </h3>
+                  
+                  {episode.air_date && (
+                    <div className="flex items-center gap-1 mt-2 text-xs text-white/60">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(episode.air_date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </div>
+                  )}
+                </div>
+                
+                {episode.overview && (
+                  <p className="text-sm text-white/70 line-clamp-3 leading-relaxed">
+                    {episode.overview}
+                  </p>
+                )}
+                
+                {/* Watch Button */}
+                <div className="pt-2">
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEpisodeClick(episode.episode_number);
+                    }}
+                  >
+                    <Play className="h-3 w-3 mr-2" />
+                    Watch Episode
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
+        </div>
+      )}
+      
+      {/* Empty State */}
+      {!loading && episodes.length === 0 && (
+        <div className="text-center py-16">
+          <div className="glass-morphism rounded-xl p-8 max-w-md mx-auto">
+            <div className="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+              <Play className="h-8 w-8 text-white/60" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No Episodes Found</h3>
+            <p className="text-white/60">
+              Episodes for this season are not available at the moment.
+            </p>
+          </div>
         </div>
       )}
     </div>
