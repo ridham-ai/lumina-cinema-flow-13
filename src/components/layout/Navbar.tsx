@@ -39,11 +39,11 @@ const Navbar = () => {
   if (isMobile) {
     return (
       <>
-        {/* Mobile top header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
+        {/* Mobile top header with liquid glass effect */}
+        <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b border-white/20">
           <div className="flex items-center justify-center px-4 py-3">
             <Link to="/" className="flex items-center">
-              <h1 className="text-lg font-bold text-gradient">LUMINA</h1>
+              <h1 className="text-lg font-bold text-gradient liquid-text">LUMINA</h1>
             </Link>
           </div>
         </header>
@@ -51,31 +51,38 @@ const Navbar = () => {
         {/* Search overlay */}
         <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-        {/* Mobile bottom navigation */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-white/10 safe-area-pb">
+        {/* Mobile bottom navigation with liquid glass effect */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 liquid-glass-bottom border-t border-white/20 safe-area-pb">
           <div className="flex items-center justify-around px-2 py-2">
             {navigationItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center p-2 min-w-0 flex-1",
-                  isActive(item.path) ? "text-primary" : "text-muted-foreground"
+                  "flex flex-col items-center p-3 min-w-0 flex-1 transition-all duration-500 liquid-nav-item",
+                  isActive(item.path) ? "text-primary liquid-active" : "text-muted-foreground hover:text-primary"
                 )}
               >
-                <item.icon className="h-5 w-5 mb-1" />
-                <span className="text-[10px] leading-none">{item.label}</span>
+                <div className="relative">
+                  <item.icon className="h-5 w-5 mb-1 transition-transform duration-300" />
+                  {isActive(item.path) && (
+                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-md animate-pulse"></div>
+                  )}
+                </div>
+                <span className="text-[10px] leading-none font-medium">{item.label}</span>
                 {isActive(item.path) && (
-                  <div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary"></div>
+                  <div className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-primary liquid-indicator"></div>
                 )}
               </Link>
             ))}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex flex-col items-center p-2 text-muted-foreground min-w-0 flex-1"
+              className="flex flex-col items-center p-3 text-muted-foreground min-w-0 flex-1 transition-all duration-500 liquid-nav-item hover:text-primary"
             >
-              <Search className="h-5 w-5 mb-1" />
-              <span className="text-[10px] leading-none">Search</span>
+              <div className="relative">
+                <Search className="h-5 w-5 mb-1 transition-transform duration-300" />
+              </div>
+              <span className="text-[10px] leading-none font-medium">Search</span>
             </button>
           </div>
         </nav>
@@ -83,113 +90,140 @@ const Navbar = () => {
     );
   }
 
-  // Desktop navigation
+  // Desktop navigation with enhanced liquid glass design
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        isScrolled ? "glass-morphism backdrop-blur-xl" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-700",
+        isScrolled ? "liquid-glass-header backdrop-blur-3xl" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <h1 className="text-2xl font-bold text-gradient">LUMINA</h1>
+          {/* Logo with liquid effect */}
+          <Link to="/" className="flex items-center group">
+            <h1 className="text-2xl font-bold text-gradient liquid-text group-hover:scale-105 transition-transform duration-300">
+              LUMINA
+            </h1>
           </Link>
 
-          {/* Main Navigation */}
+          {/* Main Navigation with enhanced liquid glass */}
           <nav className={cn(
-            "glass-morphism rounded-full px-4 md:px-8 py-3 transition-all duration-300",
-            isScrolled ? "shadow-lg bg-white/10" : "bg-white/5"
+            "liquid-glass-nav rounded-full px-6 md:px-10 py-4 transition-all duration-500 hover:scale-105",
+            isScrolled ? "shadow-2xl bg-white/15 border border-white/30" : "bg-white/10 border border-white/20"
           )}>
-            <ul className="flex items-center space-x-4 md:space-x-10">
+            <ul className="flex items-center space-x-6 md:space-x-12">
               <li>
                 <Link
                   to="/"
                   className={cn(
-                    "flex flex-col items-center transition-all duration-300 relative",
-                    isActive("/") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
+                    isActive("/") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
                   )}
                 >
                   <div className={cn(
-                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
-                    isActive("/") ? "bg-primary opacity-100" : "opacity-0"
+                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
+                    isActive("/") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
                   )} />
-                  <Home className="h-5 w-5" />
-                  <span className="text-xs mt-1 font-medium">Home</span>
+                  <div className="relative">
+                    <Home className="h-5 w-5 transition-all duration-300" />
+                    {isActive("/") && (
+                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 font-semibold liquid-text">Home</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/movies"
                   className={cn(
-                    "flex flex-col items-center transition-all duration-300 relative",
-                    isActive("/movies") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
+                    isActive("/movies") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
                   )}
                 >
                   <div className={cn(
-                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
-                    isActive("/movies") ? "bg-primary opacity-100" : "opacity-0"
+                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
+                    isActive("/movies") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
                   )} />
-                  <Film className="h-5 w-5" />
-                  <span className="text-xs mt-1 font-medium">Movies</span>
+                  <div className="relative">
+                    <Film className="h-5 w-5 transition-all duration-300" />
+                    {isActive("/movies") && (
+                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 font-semibold liquid-text">Movies</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/tv"
                   className={cn(
-                    "flex flex-col items-center transition-all duration-300 relative",
-                    isActive("/tv") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
+                    isActive("/tv") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
                   )}
                 >
                   <div className={cn(
-                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
-                    isActive("/tv") ? "bg-primary opacity-100" : "opacity-0"
+                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
+                    isActive("/tv") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
                   )} />
-                  <Tv className="h-5 w-5" />
-                  <span className="text-xs mt-1 font-medium">TV Shows</span>
+                  <div className="relative">
+                    <Tv className="h-5 w-5 transition-all duration-300" />
+                    {isActive("/tv") && (
+                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 font-semibold liquid-text">TV Shows</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/watchlist"
                   className={cn(
-                    "flex flex-col items-center transition-all duration-300 relative",
-                    isActive("/watchlist") ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
+                    isActive("/watchlist") ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
                   )}
                 >
                   <div className={cn(
-                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
-                    isActive("/watchlist") ? "bg-primary opacity-100" : "opacity-0"
+                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
+                    isActive("/watchlist") ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
                   )} />
-                  <BookmarkPlus className="h-5 w-5" />
-                  <span className="text-xs mt-1 font-medium">Watchlist</span>
+                  <div className="relative">
+                    <BookmarkPlus className="h-5 w-5 transition-all duration-300" />
+                    {isActive("/watchlist") && (
+                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 font-semibold liquid-text">Watchlist</span>
                 </Link>
               </li>
               <li>
                 <button
                   onClick={() => setSearchOpen(true)}
                   className={cn(
-                    "flex flex-col items-center transition-all duration-300 relative",
-                    searchOpen ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    "flex flex-col items-center transition-all duration-500 relative liquid-nav-item group",
+                    searchOpen ? "text-primary scale-110 liquid-active" : "text-muted-foreground hover:text-primary hover:scale-105"
                   )}
                 >
                   <div className={cn(
-                    "absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full transition-all",
-                    searchOpen ? "bg-primary opacity-100" : "opacity-0"
+                    "absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full transition-all duration-500 liquid-indicator",
+                    searchOpen ? "bg-primary opacity-100 shadow-lg shadow-primary/50" : "opacity-0"
                   )} />
-                  <Search className="h-5 w-5" />
-                  <span className="text-xs mt-1 font-medium">Search</span>
+                  <div className="relative">
+                    <Search className="h-5 w-5 transition-all duration-300" />
+                    {searchOpen && (
+                      <div className="absolute -inset-3 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 font-semibold liquid-text">Search</span>
                 </button>
               </li>
             </ul>
           </nav>
 
-          {/* Right side - could add user profile or additional actions here */}
-          <div className="w-[100px]">
-            {/* Placeholder to balance the layout */}
+          {/* Right side placeholder with liquid effect */}
+          <div className="w-[100px] flex justify-end">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl border border-white/20"></div>
           </div>
         </div>
       </div>
