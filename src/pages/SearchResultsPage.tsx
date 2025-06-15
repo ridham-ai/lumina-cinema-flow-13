@@ -66,35 +66,36 @@ const SearchResultsPage: React.FC = () => {
   };
   
   return (
-    <div className="pt-24 pb-16">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold mb-1 flex items-center gap-2">
+    <div className="min-h-screen pt-20 md:pt-24 pb-20 md:pb-16">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center justify-between mb-6 md:mb-8">
+          <div className="flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2">
               Search Results
               {query && (
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={clearSearch}
-                  className="ml-2"
+                  className="ml-2 h-8"
                 >
                   <X className="h-4 w-4 mr-1" /> Clear
                 </Button>
               )}
             </h1>
             {query && (
-              <p className="text-muted-foreground">
+              <p className="text-sm md:text-base text-muted-foreground">
                 {totalResults} results for "{query}"
               </p>
             )}
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant={mediaTypeFilter === "all" ? "default" : "outline"}
               size="sm"
               onClick={() => handleMediaTypeFilter("all")}
+              className="h-9"
             >
               All
             </Button>
@@ -102,6 +103,7 @@ const SearchResultsPage: React.FC = () => {
               variant={mediaTypeFilter === "movie" ? "default" : "outline"}
               size="sm"
               onClick={() => handleMediaTypeFilter("movie")}
+              className="h-9"
             >
               <Film className="h-4 w-4 mr-1" /> Movies
             </Button>
@@ -109,6 +111,7 @@ const SearchResultsPage: React.FC = () => {
               variant={mediaTypeFilter === "tv" ? "default" : "outline"}
               size="sm"
               onClick={() => handleMediaTypeFilter("tv")}
+              className="h-9"
             >
               <Tv className="h-4 w-4 mr-1" /> TV Shows
             </Button>
@@ -116,45 +119,49 @@ const SearchResultsPage: React.FC = () => {
         </div>
         
         {!query ? (
-          <div className="text-center py-16">
-            <h2 className="text-xl font-semibold mb-2">Enter a search term</h2>
-            <p className="text-muted-foreground">
+          <div className="text-center py-16 md:py-24">
+            <h2 className="text-lg md:text-xl font-semibold mb-2">Enter a search term</h2>
+            <p className="text-sm md:text-base text-muted-foreground">
               Search for movies or TV shows by title
             </p>
           </div>
         ) : (
-          <MediaGrid 
-            items={results} 
-            loading={loading} 
-            emptyMessage="No results found. Try a different search term."
-          />
+          <div className="w-full">
+            <MediaGrid 
+              items={results} 
+              loading={loading} 
+              emptyMessage="No results found. Try a different search term."
+            />
+          </div>
         )}
         
         {/* Pagination */}
         {results.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center mt-8">
-            <div className="join glass-morphism">
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
-                className="mx-1"
-              >
-                Previous
-              </Button>
-              <span className="flex items-center px-4">
-                Page {page} of {totalPages}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={page === totalPages}
-                onClick={() => setPage(page + 1)}
-                className="mx-1"
-              >
-                Next
-              </Button>
+          <div className="flex justify-center mt-8 md:mt-12">
+            <div className="glass-morphism rounded-lg px-4 py-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={page === 1}
+                  onClick={() => setPage(page - 1)}
+                  className="h-8"
+                >
+                  Previous
+                </Button>
+                <span className="text-sm px-3 py-1">
+                  Page {page} of {totalPages}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={page === totalPages}
+                  onClick={() => setPage(page + 1)}
+                  className="h-8"
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
         )}
