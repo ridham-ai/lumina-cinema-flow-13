@@ -126,85 +126,95 @@ const EpisodeSelector: React.FC<EpisodeSelectorProps> = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {episodes.map((episode) => (
             <Card
               key={episode.id}
-              className="group cursor-pointer bg-black/20 backdrop-blur-xl border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden"
+              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-gradient-to-br from-black/30 via-black/20 to-transparent backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/50"
               onClick={() => handleEpisodeClick(episode.episode_number)}
             >
               {/* Episode Thumbnail */}
-              <div className="relative aspect-video overflow-hidden">
+              <div className="relative aspect-video overflow-hidden rounded-t-2xl">
                 <img
                   src={
                     getImageUrl(episode.still_path, "w500") ||
                     "/placeholder.svg"
                   }
                   alt={episode.name}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                 />
                 
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
+                
                 {/* Play Button Overlay */}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 border border-white/30">
-                    <Play className="h-6 w-6 text-white fill-white" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 border border-white/40 shadow-lg transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                    <Play className="h-8 w-8 text-white fill-white drop-shadow-lg" />
                   </div>
                 </div>
                 
                 {/* Episode Number Badge */}
-                <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full border border-white/20">
-                  Ep {episode.episode_number}
+                <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-600/90 to-purple-600/90 backdrop-blur-sm text-white text-sm font-bold px-4 py-2 rounded-full border border-white/30 shadow-lg">
+                  Episode {episode.episode_number}
                 </div>
                 
                 {/* Runtime Badge */}
                 {episode.runtime && (
-                  <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded border border-white/20 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {episode.runtime}m
+                  <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white text-sm px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 shadow-lg">
+                    <Clock className="h-4 w-4" />
+                    {episode.runtime}min
                   </div>
                 )}
               </div>
               
-              {/* Episode Info */}
-              <CardContent className="p-4 space-y-3">
-                <div>
-                  <h3 className="font-semibold text-white line-clamp-2 group-hover:text-primary transition-colors">
+              {/* Episode Content */}
+              <CardContent className="p-6 space-y-4">
+                {/* Title and Air Date */}
+                <div className="space-y-3">
+                  <h3 className="font-bold text-xl text-white line-clamp-2 group-hover:text-blue-300 transition-colors duration-300 leading-tight">
                     {episode.name}
                   </h3>
                   
                   {episode.air_date && (
-                    <div className="flex items-center gap-1 mt-2 text-xs text-white/60">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(episode.air_date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
+                    <div className="flex items-center gap-2 text-white/60">
+                      <Calendar className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        {new Date(episode.air_date).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
                     </div>
                   )}
                 </div>
                 
+                {/* Overview */}
                 {episode.overview && (
-                  <p className="text-sm text-white/70 line-clamp-3 leading-relaxed">
+                  <p className="text-white/80 text-sm line-clamp-3 leading-relaxed">
                     {episode.overview}
                   </p>
                 )}
                 
                 {/* Watch Button */}
-                <div className="pt-2">
+                <div className="pt-4">
                   <Button 
                     size="sm" 
-                    className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-0 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEpisodeClick(episode.episode_number);
                     }}
                   >
-                    <Play className="h-3 w-3 mr-2" />
-                    Watch Episode
+                    <Play className="h-4 w-4 mr-2" />
+                    Watch Now
                   </Button>
                 </div>
               </CardContent>
+
+              {/* Subtle glow effect on hover */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             </Card>
           ))}
         </div>
@@ -212,13 +222,13 @@ const EpisodeSelector: React.FC<EpisodeSelectorProps> = ({
       
       {/* Empty State */}
       {!loading && episodes.length === 0 && (
-        <div className="text-center py-16">
-          <div className="glass-morphism rounded-xl p-8 max-w-md mx-auto">
-            <div className="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
-              <Play className="h-8 w-8 text-white/60" />
+        <div className="text-center py-20">
+          <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto border border-white/10">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-white/10 to-white/5 rounded-full flex items-center justify-center border border-white/20">
+              <Play className="h-10 w-10 text-white/60" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">No Episodes Found</h3>
-            <p className="text-white/60">
+            <h3 className="text-2xl font-bold text-white mb-3">No Episodes Found</h3>
+            <p className="text-white/70 leading-relaxed">
               Episodes for this season are not available at the moment.
             </p>
           </div>
